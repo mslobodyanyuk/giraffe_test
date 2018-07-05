@@ -1,51 +1,80 @@
-<p align="center"><img src="https://laravel.com/assets/img/components/logo-laravel.svg"></p>
+A task:
+=====================
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
+Goal: create an ad site
+-----------------------
 
-## About Laravel
+Technical requirements: using laravel php framework, you need to create a basic functionality for creating, editing and deleting ads.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable, creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as:
+* The code must conform to the PSR-1 / PSR-2 standards (http://www.php-fig.org/psr/psr-1/, http://www.php-fig.org/psr/psr-2/ ) (can be configured in the IDE, for example phpstorm)
+* The code must be available on github / bitbucket.
+* On the frontend, you can (but not necessarily) use twitter bootstrap (http://getbootstrap.com)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Lead time: Up to a week (with days off) since the introduction. (The task itself will take up to 8-10 hours of work).
 
-Laravel is accessible, yet powerful, providing tools needed for large, robust applications. A superb combination of simplicity, elegance, and innovation give you tools you need to build any application with which you are tasked.
+Business requirements:
+----------------------
+ 
+1. The home page of the site (uri = '/') must have an authorization form, an ad list and a link 'Create Ad', leading to the page for creating / editing an ad for authorized users.
 
-## Learning Laravel
+a) Authorization is a form of two fields: username and password. Username must be unique and not empty.
+If the user with this username is not in the database, we just need to create it and immediately authorize it, the password should not be empty at the same time.
+If the user with the given username exists and the password is correct, then we must authorize the user.
+If the user is authorized, then instead of the authorization form, we must display the username of the user and the logout (uri = 'logout') link, when clicked on, the user will be logged off the site.
 
-Laravel has the most extensive and thorough documentation and video tutorial library of any modern web application framework. The [Laravel documentation](https://laravel.com/docs) is thorough, complete, and makes it a breeze to get started learning the framework.
+b) Ads must be located on 5 entities per page. Accordingly, pagination for ads must be implemented.
+Each ad should include: title, description, author name and created_at datetime. If the current ad is created by the current authorized user,
+then there must be a delete button (uri = '/ delete / $ id', where $ id is the id of the current ad), when clicking on which the ad will be deleted, and the user will be redirected to the start page of the site.
 
-If you're not in the mood to read, [Laracasts](https://laracasts.com) contains over 900 video tutorials on a range of topics including Laravel, modern PHP, unit testing, JavaScript, and more. Boost the skill level of yourself and your entire team by digging into our comprehensive video library.
+c) If the user is authorized on the site, then on the start page of the site there should be a link 'Create Ad', which will lead to the creation page of the advertisement (uri = '/ edit')
 
-## Laravel Sponsors
+2. The page for creating the ad (uri = '/ edit') allows authorized users to create ads.
+This page is a form of creating an ad. This form consists of a title, description and a create button.
+Title and description should not be empty. When you click on the create button, the ad should be created, and the user should be redirected to the adview page (uri = '/ $ id', where $ id is the ad id).
 
-We would like to extend our thanks to the following sponsors for helping fund on-going Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](http://patreon.com/taylorotwell):
+3. The ad view page (uri = '/ $ id', where $ id is the ad id) is the title, description, author name and creation date.
+If the current ad is created by the current authorized user, then there should be another delete button (uri = '/ delete / $ id', where $ id is the id of the current ad),
+when clicking on which the ad will be deleted, and the user will be redirected to the start page of the site.
 
-- **[Vehikl](http://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[British Software Development](https://www.britishsoftware.co)**
-- **[Styde](https://styde.net)**
-- **[Codecourse](https://www.codecourse.com)**
-- [Fragrantica](https://www.fragrantica.com)
+Additional requirements (not mandatory for implementation):
 
-## Contributing
+4. Authorized users should also see the edit button (uri = '/ edit / $ id' where $ id is the ad's id) on the start page and on the adview page (uri = '/ $ id', where $ id is the ad id) ).
+When this button is clicked, they should be redirected to the ad editing page (uri = '/ edit / $ id', where $ id is the ad id).
+Pages for editing and creating ads must have the same functionality.
+The ad editing page should have a save button instead of the create button, which is located on the ad creation page.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](http://laravel.com/docs/contributions).
+5. On the start page of the site, the title of the ad should be made a link that will lead to the adview page (uri = '/ $ id', where $ id is the ad id).
 
-## Security Vulnerabilities
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell at taylor@laravel.com. All security vulnerabilities will be promptly addressed.
+Actions on deployment of the project:
+-------------------------------------
 
-## License
+* configure domain settings `hosts` file, `httpd.conf`.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT).
+* database settings `.env` file
+
+Rename `.env.example` -> `.env`
+Make a new database - test_giraffe for example ( utf8_general_ci encoding ),
+```
+DB_DATABASE = giraffe_test
+DB_USERNAME = root
+DB_PASSWORD =
+```
+
+* starting migrations
+
+`php artisan migrate`
+
+* launch of fixtures - start seeder
+
+`php artisan db:seed`
+
+Administrator user names and passwords:
+```
+username: Maksim password: 123456	
+username: Victor password: admin123	
+```
+
+
+* useful links: 
+<https://www.youtube.com/watch?v=7LOtJBFpCIM&t=75s>
