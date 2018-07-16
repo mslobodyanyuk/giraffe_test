@@ -20,7 +20,7 @@ class CreateAdsTable extends Migration
             $table->string('image')->nullable();
             $table->string('authorName');
             $table->longText('text');
-            $table->integer('user_id')->unsigned()->default(1);
+            $table->integer('user_id')->unsigned();
             $table->timestamps();
         });
     }

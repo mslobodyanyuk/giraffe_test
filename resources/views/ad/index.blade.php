@@ -21,8 +21,8 @@
     <br/>
     <div class="container">
         <div class="form-group">
-            <a href="{{ url('ads') }}" class="btn btn-success">Logout</a>
-{{--            <a href="{{ route('logout')}}" class="btn btn-success">Logout</a>--}}
+          {{--  <a href="{{ url('ads') }}" class="btn btn-success">Logout</a>--}}
+            <a href="{{ route('logout')}}" class="btn btn-success">Logout</a>
 
 
             {{--<a href="{{ route('register')}}" class="btn btn-success">Logout</a>--}}
@@ -89,15 +89,35 @@
     return redirect()->back()->with(['message'=>'У Вас нет прав.']);
     ???return redirect()->back();
     }*/--}}
-    @can('add',$ads)
+    @can('add', $user)
     <div class="container">
         <div class="form-group">
             <h1>List Ads:</h1>
-            <a href="{{url('/ads/create')}}" class="btn btn-success">Create Ad</a>
+            <a href="{{url('/ads/create')}}" class="btn btn-success">Create Ad!!!</a>
             <hr>
         </div>
     </div>
     @endcan
+
+    @can('update', $ads)
+    <div class="container">
+        <div class="form-group">
+            <h1>List Ads:</h1>
+            <a href="{{url('/ads/create')}}" class="btn btn-success">Create Ad!!!</a>
+            <hr>
+        </div>
+    </div>
+    @endcan
+
+    {{--@if(Gate::allow('add','ads'))
+        <div class="container">
+            <div class="form-group">
+                <h1>List Ads:</h1>
+                <a href="{{url('/ads/create')}}" class="btn btn-success">Create Ad!!!</a>
+                <hr>
+            </div>
+        </div>
+    @endif--}}
     {{--правило не срабатывает--}}
 
 

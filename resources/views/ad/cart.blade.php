@@ -16,10 +16,10 @@
         </div>
         <div class="form-group">
             <div class="col-sm-1">
-                <a href="{{ url('ads')}}" class="btn btn-primary">Back</a>{{--на индекс--}}
-                {{--<a href="{{ url('/')}}" class="btn btn-primary">Back</a>--}}
+                <a href="{{ url('/')}}" class="btn btn-primary">Back</a>
             </div>
-            @if($ads->user_id == $user->id)
+            {{--@if(Auth::check() && $ads->user_id == $user->id)--}}
+            @if(Auth::id() == $ads->user_id )
                 {!! Form::open(['method' => 'DELETE', 'route'=>['ads.destroy', $ads->id]]) !!}
 
                 {!! Form::submit('Delete', ['class' => 'btn btn-danger']) !!}

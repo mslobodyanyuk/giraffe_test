@@ -14,6 +14,7 @@ class Ad extends Model
         'authorName',
         'text',
         'created_at',
+        'user_id'
     ];
 
     public function getPage()

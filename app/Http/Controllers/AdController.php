@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 
 class AdController extends Controller{
@@ -32,49 +33,51 @@ class AdController extends Controller{
 
             $user = User::all()->where('username', $request['username'])->first();
 
-            //if (Hash::check($request['password'], $user->password)) {
-            if (password_verify($request['password'], $user->password)) {
-                // dd("Passwords match");
 
-Auth::login($user);
+echo "<pre>request['password'] = ", var_dump($request['password']) ,"</pre>";
+echo "<pre>user->password = ", var_dump($user->password) ,"</pre>";
+             //if (Hash::check($request['password'], $user->password)) {
+            if (password_verify($request['password'], $user->password)) {
+                 //dd("Passwords match"); // Завести нового пользователя так, чтоб проходил проверку совпадения пароля
+
+    Auth::login($user);
+
+
 //dd(Auth::user()->username);
 
                 $ad = new Ad();
                 return $this->index($ad, $user);
 
             }else{
-                //dd("Passwords do not match");
-                return back()->with('error', "Passwords do not match");
+                dd("Passwords do not match");
+               // return back()->with('error', "Passwords do not match");
             }
         }
 
+
         $username = $request['username'];
-        $password = Hash::make($request['password']);
+        $password = $request['password'];
+
+
 
         $objUser = $this->userCreate(['username' => $username, 'password' => $password]);
 
-        if(!$objUser instanceof User){
-            return back()->with('error', "Can't create object");
-        }
+
         $isAuth = true;
-        Auth::attempt(array('username' => $objUser->username, 'password' => $objUser->password), $isAuth);
-//dd(Auth::attempt(array('username' => $objUser->username, 'password' => $objUser->password), true));
+        if (Auth::attempt(array('username' => $objUser->username, 'password' => $objUser->password), $isAuth)) {
+
+        }
 
 
-
-//$token = Str::random(60)
-//Auth::logout($objUser);
-$remember_token = 'test_remember_token';
-$objUser->setRememberToken($remember_token);
-
+Auth::logout($objUser);
 Auth::login($objUser);
 
-//Session::put('username', Auth::user()->username);
-//dd(Auth::user()->username);
+
 
         $ad = new Ad();
         return $this->index($ad, $objUser);
     }
+
 
     protected function validator(array $data)
     {
@@ -95,21 +98,23 @@ Auth::login($objUser);
 
     public function index(Ad $ad, User $user)
     {
-
-
        $ads = $ad->getPage();
+
+        $user = new User();
+
+        if( Auth::user()){
+            $user = Auth::user();
+        }
 
        return view('ad.index', compact('ads', 'user'));
 
    }
 
-    //public function cart($id, Ad $ad)
-    public function cart($id, Ad $ad, User $user)
+
+    public function cart($id, Ad $ad)
    {
        $ads = $ad->getById($id);
-Auth::login($user);
-dd(Auth::user()->username);
-
+       $user = Auth::user();
        return view('ad.cart', compact('ads', 'user'));
    }
 
@@ -119,21 +124,11 @@ dd(Auth::user()->username);
     *
     * @return Response
     */
-    public function create(User $user)
+    public function create()
     {
-$remember_token = 'test_remember_token';
-$user->setRememberToken($remember_token);
-
         $ads = Ad::all();
 
-
-//Auth::user()->username;
-Auth::check();
-Auth::login($user);
-        $ads['authorName'] = Auth::user()->username;
-dd(Auth::user()->username);
-
-        return view('ad.create', compact('ads', 'user'));
+        return view('ad.create', compact('ads'));
     }
 
     /**
@@ -141,31 +136,16 @@ dd(Auth::user()->username);
      *
      * @return Response
      */
-    //public function store(Request $request)
-    public function store(Request $request, User $user)
+    public function store(Request $request)
     {
         $ads = $request->all();
 
-        if (Auth::check())
-        {
-            dd(Auth::user()->username);
-        }
+        $ads['authorName'] = Auth::user()->username;
+        $ads['user_id'] = Auth::user()->id;
 
+        $ad =  Ad::create($ads);
 
-Auth::login($user);
-dd(auth()->user());
-
-
-
-
-$ads['authorName'] = Auth::user()->username;
-
-
-       $ad =  Ad::create($ads);
-
-
-
-        return $this->cart($ad->id, $ad, $user);
+        return $this->cart($ad->id, $ad);
     }
 
     /**
@@ -181,6 +161,29 @@ $ads['authorName'] = Auth::user()->username;
         return view('ad.edit', compact('ad'));
     }
 
+    public function logout() {
+        Auth::logout();
+
+        $ad = new Ad();
+        $user = new User();
+        return $this->index($ad, $user);
+
+    }
+
+    /*public function logout()
+    {
+        Auth::logout();
+        //$ad = new Ad();
+
+
+
+        return view('ad.index');
+
+        //return redirect('register');
+        // $this->index($ad, $user);
+   //     return view('ad.index', compact('ads'));
+    }*/
+
     /**
      * Update the specified resource in storage.
      *
@@ -193,7 +196,10 @@ $ads['authorName'] = Auth::user()->username;
         $ad = Ad::find($id);
         $ad->update($adUpdate);
 
-        return redirect('ads');
+
+        $user =  Auth::user();
+        return $this->index($ad, $user);
+        //return redirect('/');
     }
 
     /**
@@ -209,15 +215,14 @@ $ads['authorName'] = Auth::user()->username;
         return redirect('ads');
     }*/
 
-    public function destroy($id, User $user)
+    public function destroy($id)
     {
+       // dd($id);
+
         Ad::find($id)->delete();
 
-//Auth::check(); //!!!
-//Auth::login($user);
-//dd(Auth::user()->username);
-
         $ad = new Ad();
+        $user = Auth::user();
 
         return $this->index($ad, $user);
     }

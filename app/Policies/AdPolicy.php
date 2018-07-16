@@ -21,7 +21,9 @@ class AdPolicy
     }
 
     public function add(User $user){
+
         foreach ($user->roles as $role) {
+
             if ($role->name == 'Admin') {
                 return true;
             }
@@ -30,7 +32,9 @@ class AdPolicy
     }
 
     public function update(User $user, Ad $ad ){
+
         foreach($user->roles as $role){
+
             if($role->name == 'Admin'){
                // if($user->id == $ad->user_id ) { // все авторизированные могут редактировать         ??? может редактировать только тот Admin, кто создавал.
                     return TRUE;
@@ -53,6 +57,7 @@ class AdPolicy
 
     public function before(User $user){
         foreach ($user->roles as $role) {
+
             if ($role->name == 'Admin') {
                 return true;
             }

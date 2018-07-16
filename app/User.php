@@ -21,6 +21,8 @@ class User extends Authenticatable
         'username',
         //'email',
         'password',
+        //??? remember_token,
+
     ];
 
     /**
@@ -60,6 +62,7 @@ class User extends Authenticatable
         // Set the remember token your own way...
 
         $this->remember_token = $token;
+        $this->save();
        // $this->username = $token;
         //dd($this->remember_token);
     }
