@@ -34,16 +34,16 @@ class AdController extends Controller{
             $user = User::all()->where('username', $request['username'])->first();
 
 
-echo "<pre>request['password'] = ", var_dump($request['password']) ,"</pre>";
-echo "<pre>user->password = ", var_dump($user->password) ,"</pre>";
-             //if (Hash::check($request['password'], $user->password)) {
+//echo "<pre>request['password'] = ", var_dump($request['password']) ,"</pre>";
+//echo "<pre>user->password = ", var_dump($user->password) ,"</pre>";
+
             if (password_verify($request['password'], $user->password)) {
                  //dd("Passwords match"); // Завести нового пользователя так, чтоб проходил проверку совпадения пароля
 
     Auth::login($user);
 
 
-//dd(Auth::user()->username);
+
 
                 $ad = new Ad();
                 return $this->index($ad, $user);
@@ -166,23 +166,10 @@ Auth::login($objUser);
 
         $ad = new Ad();
         $user = new User();
-        return $this->index($ad, $user);
 
+        return $this->index($ad, $user);
     }
 
-    /*public function logout()
-    {
-        Auth::logout();
-        //$ad = new Ad();
-
-
-
-        return view('ad.index');
-
-        //return redirect('register');
-        // $this->index($ad, $user);
-   //     return view('ad.index', compact('ads'));
-    }*/
 
     /**
      * Update the specified resource in storage.
@@ -198,8 +185,10 @@ Auth::login($objUser);
 
 
         $user =  Auth::user();
+
+
         return $this->index($ad, $user);
-        //return redirect('/');
+        //return back();
     }
 
     /**
@@ -217,7 +206,7 @@ Auth::login($objUser);
 
     public function destroy($id)
     {
-       // dd($id);
+//dd('!!!');
 
         Ad::find($id)->delete();
 
@@ -225,6 +214,7 @@ Auth::login($objUser);
         $user = Auth::user();
 
         return $this->index($ad, $user);
+        //return back();
     }
 
 }

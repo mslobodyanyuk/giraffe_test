@@ -5,11 +5,11 @@
     {{csrf_field()}}
     <div class="form-group">
         {!! Form::label('Title', 'Title:') !!}
-        {!! Form::text('title',null,['class'=>'form-control']) !!}
+        {!! Form::text('title',null,['class'=>'form-control', 'placeholder'=>'Title', 'required']) !!}
     </div>
     <div class="form-group">
         {!! Form::label('description', 'Description:') !!}
-        {!! Form::text('description',null,['class'=>'form-control']) !!}
+        {!! Form::text('description',null,['class'=>'form-control', 'placeholder'=>'Description', 'required']) !!}
     </div>
     <div class="form-group">
         {!! Form::label('text', 'Text:') !!}

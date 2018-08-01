@@ -14,6 +14,7 @@
 
 
 Route::group(['middleware' => 'guest'], function (){
+
     Route::get('/', function(){
         return view('ad.index')->name('register');
     });
@@ -25,21 +26,16 @@ Route::group(['middleware' => 'guest'], function (){
 });
 
 
-/*Route::group(['middleware' => 'auth'], function (){
-    Route::get('/logout', function(){
-        //Auth::logout();
-        return redirect(route('register'));
-    })->name('logout');
-});*/
-
 
 Route::resource('/', 'AdController');
 Route::resource('ads', 'AdController');// index
 
+
+
 Route::get('/', ['as' => 'main', 'uses' => 'AdController@index']);
 Route::get('ad/{id}', ['as' => 'cart', 'uses' => 'AdController@cart']);
 
-//Route::get('ads/delete/{id}', 'AdController@destroy')->name('ads.destroy');
+
 
 //??? - ads/create
 Route::get('ads/create', 'AdController@create')->name('ads.create');
@@ -51,10 +47,12 @@ Route::post('ads/create', 'AdController@create');
 /**************/
 Route::get('logout', 'AdController@logout')->name('logout');
 
-//Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
-//Route::get('ads/create', 'AdController@create')->name('create');
-
-
 
 //Auth::routes();// - с ним не светится Create Ad
 
+
+
+Route::get('delete/{id}','AdController@destroy');
+
+//???
+Route::get('edit/{id}','AdController@edit');
