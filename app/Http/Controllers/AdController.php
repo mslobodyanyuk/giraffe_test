@@ -2,83 +2,47 @@
 
 use App\Ad;
 use App\User;
-
-use Illuminate\Foundation\Auth\RegistersUsers;
-
 use Illuminate\Http\Request;
-
-//use Auth;
-//use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
-
 
 class AdController extends Controller{
 
-    public function __construct()
-    {
-       // $this->middleware('auth');
-
-    }
-
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function register(Request $request)
     {
         try {
             $this->validator($request->all())->validate();
 
         }catch(\Exception $e){
-
             $user = User::all()->where('username', $request['username'])->first();
-
-
-//echo "<pre>request['password'] = ", var_dump($request['password']) ,"</pre>";
-//echo "<pre>user->password = ", var_dump($user->password) ,"</pre>";
-
             if (password_verify($request['password'], $user->password)) {
-                 //dd("Passwords match"); // Завести нового пользователя так, чтоб проходил проверку совпадения пароля
+                Auth::login($user);
 
-    Auth::login($user);
-
-
-
-
-                $ad = new Ad();
-                return $this->index($ad, $user);
-
+                return redirect()->back();
             }else{
-                dd("Passwords do not match");
-               // return back()->with('error', "Passwords do not match");
+                return redirect()->back();
             }
         }
-
 
         $username = $request['username'];
         $password = $request['password'];
 
-
-
         $objUser = $this->userCreate(['username' => $username, 'password' => $password]);
+        Auth::login($objUser);
 
-
-        $isAuth = true;
-        if (Auth::attempt(array('username' => $objUser->username, 'password' => $objUser->password), $isAuth)) {
-
-        }
-
-
-Auth::logout($objUser);
-Auth::login($objUser);
-
-
-
-        $ad = new Ad();
-        return $this->index($ad, $objUser);
+        return redirect()->back();
     }
 
-
+    /**
+     * Get a validator for an incoming registration request.
+     *
+     * @param  array  $data
+     * @return \Illuminate\Contracts\Validation\Validator
+     */
     protected function validator(array $data)
     {
         return Validator::make($data, [
@@ -87,6 +51,12 @@ Auth::login($objUser);
         ]);
     }
 
+    /**
+     * Create a new user instance after a valid registration.
+     *
+     * @param  array  $data
+     * @return User
+     */
     protected function userCreate(array $data)
     {
         return User::create([
@@ -95,29 +65,39 @@ Auth::login($objUser);
         ]);
     }
 
+    /**
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function logout() {
+        Auth::logout();
 
-    public function index(Ad $ad, User $user)
+        return redirect()->back();
+    }
+
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function index()
     {
-       $ads = $ad->getPage();
+        $ad = new Ad();
+        $ads = $ad->getPage();
+        $user = (Auth::user()) ? Auth::user() : new User();
 
-        $user = new User();
-
-        if( Auth::user()){
-            $user = Auth::user();
-        }
-
-       return view('ad.index', compact('ads', 'user'));
-
+        return view('ad.index', compact('ads', 'user'));
    }
 
-
+    /**
+     * @param int $id
+     * @param Ad $ad
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function cart($id, Ad $ad)
    {
        $ads = $ad->getById($id);
        $user = Auth::user();
+
        return view('ad.cart', compact('ads', 'user'));
    }
-
 
    /**
     * Show the form for creating a new resource.
@@ -145,7 +125,9 @@ Auth::login($objUser);
 
         $ad =  Ad::create($ads);
 
-        return $this->cart($ad->id, $ad);
+        //return $this->cart($ad->id, $ad);
+        return redirect()->action('AdController@cart', ['id' =>$ad->id, $ad]);
+
     }
 
     /**
@@ -161,16 +143,6 @@ Auth::login($objUser);
         return view('ad.edit', compact('ad'));
     }
 
-    public function logout() {
-        Auth::logout();
-
-        $ad = new Ad();
-        $user = new User();
-
-        return $this->index($ad, $user);
-    }
-
-
     /**
      * Update the specified resource in storage.
      *
@@ -183,12 +155,8 @@ Auth::login($objUser);
         $ad = Ad::find($id);
         $ad->update($adUpdate);
 
-
-        $user =  Auth::user();
-
-
-        return $this->index($ad, $user);
-        //return back();
+      //  return $this->index();
+        return redirect()->action('AdController@index');
     }
 
     /**
@@ -197,24 +165,11 @@ Auth::login($objUser);
      * @param  int  $id
      * @return Response
      */
-/*    public function destroy($id)
-    {
-        Ad::find($id)->delete();
-
-        return redirect('ads');
-    }*/
-
     public function destroy($id)
     {
-//dd('!!!');
-
         Ad::find($id)->delete();
 
-        $ad = new Ad();
-        $user = Auth::user();
-
-        return $this->index($ad, $user);
-        //return back();
+        return redirect('/');
     }
 
 }

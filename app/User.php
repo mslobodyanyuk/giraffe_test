@@ -17,12 +17,8 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        //'id',
         'username',
-        //'email',
         'password',
-        //??? remember_token,
-
     ];
 
     /**
@@ -60,11 +56,8 @@ class User extends Authenticatable
   public function setRememberToken($token)
     {
         // Set the remember token your own way...
-
         $this->remember_token = $token;
         $this->save();
-       // $this->username = $token;
-        //dd($this->remember_token);
     }
 
 

@@ -20,6 +20,10 @@ class AdPolicy
         //
     }
 
+    /**
+     * @param User $user
+     * @return bool
+     */
     public function add(User $user){
 
         foreach ($user->roles as $role) {
@@ -31,12 +35,17 @@ class AdPolicy
         return FALSE;
     }
 
+    /**
+     * @param User $user
+     * @param Ad $ad
+     * @return bool
+     */
     public function update(User $user, Ad $ad ){
 
         foreach($user->roles as $role){
 
             if($role->name == 'Admin'){
-               // if($user->id == $ad->user_id ) { // все авторизированные могут редактировать         ??? может редактировать только тот Admin, кто создавал.
+               // if($user->id == $ad->user_id ) { //all authorized can edit ??? can edit only the Admin who created.
                     return TRUE;
                 //}
             }
@@ -44,10 +53,15 @@ class AdPolicy
         return FALSE;
     }
 
+    /**
+     * @param User $user
+     * @param Ad $ad
+     * @return bool
+     */
     public function delete(User $user, Ad $ad ){
         foreach($user->roles as $role){
             if($role->name == 'Admin'){
-                if($user->id == $ad->user_id ) { //может удалять только тот Admin, кто создавал.
+                if($user->id == $ad->user_id ) { //can only delete the Admin who created.
                     return TRUE;
                 }
             }
@@ -55,6 +69,10 @@ class AdPolicy
         return FALSE;
     }
 
+    /**
+     * @param User $user
+     * @return bool
+     */
     public function before(User $user){
         foreach ($user->roles as $role) {
 

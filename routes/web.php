@@ -11,8 +11,6 @@
 |
 */
 
-
-
 Route::group(['middleware' => 'guest'], function (){
 
     Route::get('/', function(){
@@ -24,35 +22,13 @@ Route::group(['middleware' => 'guest'], function (){
         return view('ad.index')->name('login');
     });
 });
-
-
-
-Route::resource('/', 'AdController');
-Route::resource('ads', 'AdController');// index
-
-
-
-Route::get('/', ['as' => 'main', 'uses' => 'AdController@index']);
-Route::get('ad/{id}', ['as' => 'cart', 'uses' => 'AdController@cart']);
-
-
-
-//??? - ads/create
-Route::get('ads/create', 'AdController@create')->name('ads.create');
-
-
-Route::post('ads/create', 'AdController@create');
-
-
-/**************/
 Route::get('logout', 'AdController@logout')->name('logout');
 
 
-//Auth::routes();// - с ним не светится Create Ad
+Route::resource('/', 'AdController', ['except' => ['show']]);
+Route::resource('ads', 'AdController', ['except' => ['show']]);
 
+Route::get('ad/{id}', ['as' => 'cart', 'uses' => 'AdController@cart']);
 
-
-Route::get('delete/{id}','AdController@destroy');
-
-//???
-Route::get('edit/{id}','AdController@edit');
+Route::delete('delete/{id}','AdController@destroy');
+Route::post('edit/{id}','AdController@edit');

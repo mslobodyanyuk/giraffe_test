@@ -42,59 +42,6 @@ class RegisterController extends Controller
         $this->middleware('guest');
     }
 
-    public function register(Request $request)
-    {
-        try {
-            $this->validator($request->all())->validate();
-
-        }catch(\Exception $e){
-
-            $user = User::all()->where('username', $request['username'])->first();
-
-            //if (Hash::check($request['password'], $user->password)) {
-            if (password_verify($request['password'], $user->password)) {
-                // dd("Passwords match");
-                Auth::attempt(array('username' => $user->username, 'password' => $user->password), true);
-
-                Auth::check(); //!!!
-                Auth::login($user);
-                $this->guard()->login($user);
-                $ads = new Ad();
-                //return $this->index($ad, $user);
-                return view('ad.index', compact('ads', 'user'));
-
-            }else{
-                //dd("Passwords do not match");
-                return back()->with('error', "Passwords do not match");
-            }
-        }
-
-        $username = $request['username'];
-        $password = Hash::make($request['password']);
-//        $isAuth = $request->has('remember') ? true : false;
-
-        //$objUser = $this->userCreate(['username' => $username, 'password' => $password]);
-        $objUser = $this->create(['username' => $username, 'password' => $password]);
-
-        if(!$objUser instanceof User){
-            return back()->with('error', "Can't create object");
-        }
-        //if($isAuth){
-        $this->guard()->login($objUser);
-        //}
-
-        Auth::attempt(array('username' => $objUser->username, 'password' => $objUser->password),true);
-
-        Auth::check(); //!!!
-        Auth::login($objUser);
-        $this->guard()->login($objUser);
-        $ad = new Ad();
-        $ads = $ad->getPage();
-        //return $this->index($ad, $objUser);
-        return view('ad.index', compact('ads', 'objUser'));
-    }
-
-
     /**
      * Get a validator for an incoming registration request.
      *

@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class Ad extends Model
 {
     protected $fillable = [
-        'id',
         'title',
         'description',
         'image',
@@ -17,16 +16,26 @@ class Ad extends Model
         'user_id'
     ];
 
+    /**
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
     public function getPage()
     {
         return $this->latest()->paginate(5);
     }
 
+    /**
+     * @param int $id
+     * @return Model|static
+     */
     public function getById($id)
     {
         return $this->where(['id'=>$id])->firstOrFail();
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function user(){
         return $this->belongsTo('App\User');
     }
