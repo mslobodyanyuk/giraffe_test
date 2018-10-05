@@ -83,7 +83,7 @@ class AdController extends Controller{
         $ads = $ad->getPage();
         $user = (Auth::user()) ? Auth::user() : new User();
 
-        return view('ad.index', compact('ads', 'user'));
+        return view('ad.index', compact('ad', 'ads', 'user'));
    }
 
     /**
@@ -157,6 +157,8 @@ class AdController extends Controller{
 
       //  return $this->index();
         return redirect()->action('AdController@index');
+
+
     }
 
     /**

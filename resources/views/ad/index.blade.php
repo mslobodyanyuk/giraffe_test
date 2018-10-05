@@ -54,40 +54,6 @@
         </div>
     @endif
 
-    {{--the @can rule does not work--}}
-    @can('add', $user)
-        <div class="container">
-            <div class="form-group">
-                <h1>List Ads:</h1>
-                <a href="{{url('/ads/create')}}" class="btn btn-success">Create Ad!!!</a>
-                <hr>
-            </div>
-        </div>
-    @endcan
-
-    @can('add')
-        <div class="container">
-            <div class="form-group">
-                <h1>List Ads:</h1>
-                <a href="{{url('/ads/create')}}" class="btn btn-success">Create Ad!!!</a>
-                <hr>
-            </div>
-        </div>
-    @endcan
-
-    @can('update', $ads)
-        <div class="container">
-            <div class="form-group">
-                <h1>List Ads:</h1>
-                <a href="{{url('/ads/create')}}" class="btn btn-success">Create Ad!!!</a>
-                <hr>
-            </div>
-        </div>
-    @endcan
-    {{--the @can rule does not work--}}
-
-
-
     <table class="table table-striped table-bordered table-hover">
         <thead>
         <tr class="bg-info">
@@ -118,25 +84,23 @@
                 <td>
                     {{ $item->created_at->format('d.m.Y H:i') }}
                 </td>
-                @if($item->user_id == $user->id)
+
+                @if(Auth::check())
                     <td><a href="{{route('ads.edit',$item->id)}}" class="btn btn-warning">Edit</a></td>
-                    <td>
+                @endif
 
-                            {{--the @can rule does not work--}}
-                            @can('delete', $ads)
-                                {!! Form::open(['method' => 'DELETE', 'route'=>['ads.destroy', $item->id]]) !!}
-                                {{ csrf_field() }}
-                                {!! Form::submit('Delete', ['class' => 'btn btn-danger']) !!}
-                                {!! Form::close() !!}
-                            @endcan
-                            {{--the @can rule does not work--}}
+                {{--@if($item->user_id == $user->id)--}}
+                @if(Auth::id() == $item->user_id)
 
+                        <td>
+                   {{-- @can('delete', $ad)--}}
                         {!! Form::open(['method' => 'DELETE', 'route'=>['ads.destroy', $item->id]]) !!}
                         {{ csrf_field() }}
                         {!! Form::submit('Delete', ['class' => 'btn btn-danger']) !!}
                         {!! Form::close() !!}
-                        @endif
-                    </td>
+                    {{--@endcan--}}
+                @endif
+                        </td>
 
             </tr>
         @endforeach

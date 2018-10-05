@@ -4,9 +4,6 @@ namespace App\Providers;
 
 use App\Ad;
 use App\Policies\AdPolicy;
-use App\User;
-use App\Policies\UserPolicy;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 

@@ -24,6 +24,9 @@
                     {!! Form::submit('Delete', ['class' => 'btn btn-danger']) !!}
                     {!! Form::close() !!}
                 </div>
+            @endif
+
+            @if(Auth::check())
                 <div class="col-sm-1">
                     {!! Form::open(['url' =>'edit/'.$ads->id, 'method' => 'POST']) !!}
                     {!! Form::button('Edit', ['type' => 'submit', 'class' => 'btn btn-warning']) !!}
